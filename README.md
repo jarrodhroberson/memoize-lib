@@ -10,7 +10,7 @@ private final Memoizer<Person,String> toString;
 ```
 Inside the constructor you use this code to initialize it.
 ```
- = Memoizers.ToString(new Function<Person,String>(){
+this.toString = Memoizers.ToString(new Function<Person,String>(){
 	public final String apply(@Nonnull final Person person) {
 		// calculate String representation and return it
 	}
