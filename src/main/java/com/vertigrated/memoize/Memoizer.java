@@ -2,6 +2,8 @@ package com.vertigrated.memoize;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.google.common.base.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public class Memoizer<T, R> implements Supplier<R>
 {
+    private static final Logger L = LoggerFactory.getLogger(Memoizer.class);
+
     @Nonnull
     private final ReentrantLock lock = new ReentrantLock();
     @Nonnull
@@ -75,10 +79,12 @@ public class Memoizer<T, R> implements Supplier<R>
     public R get()
     {
         this.lock.lock();
+        L.debug("ReentrantLock.lock()");
         try
         {
             if (this.predicate.test(this.value.get().get()))
             {
+                L.debug("WeakReference contains a null, regenerating the cached WeakReference contents.");
                 this.value.set(new WeakReference<>(this.function.apply(this.supplier.get())));
             }
             return checkNotNull(this.value.get().get());
@@ -86,6 +92,7 @@ public class Memoizer<T, R> implements Supplier<R>
         finally
         {
             this.lock.unlock();
+            L.debug("ReentrantLock.unlock()");
         }
     }
 
@@ -108,26 +115,5 @@ public class Memoizer<T, R> implements Supplier<R>
     public String toString()
     {
         return this.value.get().get().toString();
-    }
-
-    public static final class ToString<T> extends Memoizer<T,String>
-    {
-        public ToString(@Nonnull final Function<T, String> function, @Nonnull final T instance)
-        {
-            super(new Predicate<String>()
-            {
-                @Override
-                public boolean test(@Nullable final String s)
-                {
-                    return s == null;
-                }
-            }, function, new Supplier<T>() {
-                @Override
-                public T get()
-                {
-                    return instance;
-                }
-            });
-        }
     }
 }
