@@ -50,7 +50,7 @@ public class Memoizer<T, R> implements Supplier<R>
             @Override
             public T get()
             {
-                return checkNotNull(source);
+                return new WeakReference<T>(checkNotNull(source)).get();
             }
         });
     }
@@ -79,12 +79,10 @@ public class Memoizer<T, R> implements Supplier<R>
     public R get()
     {
         this.lock.lock();
-        L.debug("ReentrantLock.lock()");
         try
         {
             if (this.predicate.test(this.value.get().get()))
             {
-                L.debug("WeakReference contains a null, regenerating the cached WeakReference contents.");
                 this.value.set(new WeakReference<>(this.function.apply(this.supplier.get())));
             }
             return checkNotNull(this.value.get().get());
@@ -92,7 +90,6 @@ public class Memoizer<T, R> implements Supplier<R>
         finally
         {
             this.lock.unlock();
-            L.debug("ReentrantLock.unlock()");
         }
     }
 
