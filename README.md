@@ -4,7 +4,7 @@ Status: [![Build Status](https://travis-ci.org/jarrodhroberson/memoize-lib.svg?b
 
 Library for memozing function results.
 
-This was created as a way to create expensive `.toString()` results on demand as needed and allow them to be garbage collected as soon as possible. The implemenation uses a `WeakReference` to hold on to the result that is being memoized so that it can be released as soon as possible and to ensure that no circular references end up causing memory leaks.
+This was created as a way to create expensive `.toString()` results on demand as needed and allow them to be garbage collected as soon as possible. The implementation uses a `WeakReference` to hold on to the result that is being memoized so that it can be released as soon as possible and to ensure that no circular references end up causing memory leaks.
 
 It can be used to memoize any other types that may be expensive in time and/or space as well.
 
