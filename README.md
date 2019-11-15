@@ -1,6 +1,6 @@
 # memoize-lib
 
-[![Build Status](https://travis-ci.com/jarrodhroberson/memoize-lib.svg?branch=master)]
+![Build Status](https://travis-ci.com/jarrodhroberson/memoize-lib.svg?branch=master)
 
 Library for memozing function results.
 
